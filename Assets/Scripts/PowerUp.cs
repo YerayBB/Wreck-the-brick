@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UtilsUnknown;
 
-public class PowerUp : PoolableBehaviour
+namespace WreckTheBrick
 {
-    // Start is called before the first frame update
-    void Start()
+    public class PowerUp : PoolableBehaviour
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Start is called before the first frame update
+        void Start()
+        {
+
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
     }
 }
