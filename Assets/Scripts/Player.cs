@@ -9,6 +9,8 @@ namespace WreckTheBrick
     {
         [SerializeField]
         private float _speed = 10;
+        [SerializeField]
+        private float _maxBounceAngle = 75f;
 
         private Rigidbody2D _rigidbody;
         private Controls _inputs;
@@ -51,6 +53,25 @@ namespace WreckTheBrick
             if (_rightMove)
             {
                 _rigidbody.AddForce(Vector2.right * _speed);
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            Ball ball;
+            if(collision.gameObject.TryGetComponent<Ball>(out ball))
+            {
+                float offset =  transform.position.x - collision.GetContact(0).point.x;
+                float width = collision.otherCollider.bounds.size.x / 2;
+
+                float entranceAngle = Vector2.SignedAngle(transform.up, ball.GetDirection());
+                Debug.Log($"angle: {entranceAngle} direction: {ball.GetDirection()}");
+                float bounceAngle = offset / width * _maxBounceAngle;
+                bounceAngle = Mathf.Clamp(bounceAngle + entranceAngle, -_maxBounceAngle, _maxBounceAngle);
+
+                Quaternion rotation = Quaternion.AngleAxis(bounceAngle, Vector3.forward);
+
+                ball.SetDirection(rotation * transform.up);
             }
         }
     }

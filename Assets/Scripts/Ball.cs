@@ -37,5 +37,15 @@ namespace WreckTheBrick
         {
 
         }
+
+        public void SetDirection(Vector2 direction)
+        {
+            _rigidbody.velocity = direction * _speed;
+        }
+
+        public Vector2 GetDirection()
+        {
+            return _rigidbody.velocity.normalized;
+        }
     }
 }
