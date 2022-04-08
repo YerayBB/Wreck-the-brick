@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,11 +12,12 @@ namespace WreckTheBrick
         private float _speedBase = 5;
         private float _speed;
         private float _speedCurrent;
+        private uint _damage = 1;
 
         private Transform _transform;
         private Rigidbody2D _rigidbody;
 
-        public event System.Action<Ball> OnDestroyed;
+        public event Action<Ball> OnDestroyed;
 
         private void Awake()
         {
@@ -73,6 +75,17 @@ namespace WreckTheBrick
         private void OnDestroy()
         {
             OnDestroyed?.Invoke(this);
+        }
+
+        public void AddDamage(uint amount)
+        {
+            _damage += amount;
+            UpdateVisuals();
+        }
+
+        private void UpdateVisuals()
+        {
+            Debug.Log("Not Implemented UpdateVisuals");
         }
     }
 }

@@ -111,5 +111,10 @@ namespace WreckTheBrick
             _attachedBall = ball;
             _attachedBall.Stick(_transform);
         }
+
+        public void AddStickiness(int value)
+        {
+            _stickiness = (uint) Mathf.Max(_stickiness + value, 0);
+        }
     }
 }

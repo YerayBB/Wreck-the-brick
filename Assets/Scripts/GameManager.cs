@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,8 @@ namespace WreckTheBrick
         private Ball _ballPrefab;
         [SerializeField]
         private GameObject _powerUpPrefab;
+
+        private int _lives;
 
         private PoolMono<PowerUp> _powerUpPool;
         private List<Ball> _balls;
@@ -57,11 +60,30 @@ namespace WreckTheBrick
                     _balls.Remove(ball);
                     if(_balls.Count == 0)
                     {
-                        GameOver();
+                        AddLives(-1);
                     }
                 };
             _balls.Add(aux);
             return aux;
+        }
+
+        public void AddBall(int amount)
+        {
+            Debug.Log("Added ball");
+        }
+
+        public void AddLives(int amount)
+        {
+            _lives += amount;
+            if (_lives <= 0) GameOver();
+        }
+
+        public void AddPowerToBalls(int amount)
+        {
+            foreach(Ball ball in _balls)
+            {
+                ball.AddDamage(amount);
+            }
         }
     }
 }
