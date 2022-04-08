@@ -82,7 +82,7 @@ namespace WreckTheBrick
         {
             foreach(Ball ball in _balls)
             {
-                ball.AddDamage(amount);
+                ball.AddDamage((uint)amount);
             }
         }
     }
