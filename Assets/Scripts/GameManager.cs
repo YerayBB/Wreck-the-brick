@@ -15,6 +15,11 @@ namespace WreckTheBrick
         [SerializeField]
         private GameObject _powerUpPrefab;
 
+        [SerializeField]
+        private PowerUpData[] _powerUpTypes;
+        [SerializeField]
+        private PowerUpData[] _powerUpRareTypes;
+
         private int _lives;
 
         private PoolMono<PowerUp> _powerUpPool;
@@ -37,7 +42,7 @@ namespace WreckTheBrick
         // Start is called before the first frame update
         void Start()
         {
-            //SpawnBall(Vector2.zero);
+            SpawnPowerUp(Vector2.up * 3);
         }
 
         // Update is called once per frame
@@ -84,6 +89,11 @@ namespace WreckTheBrick
             {
                 ball.AddDamage((uint)amount);
             }
+        }
+
+        public void SpawnPowerUp(Vector3 pos)
+        {
+            _powerUpPool.GetItem().Initialize(pos, _powerUpTypes[0]);
         }
     }
 }

@@ -8,12 +8,12 @@ namespace WreckTheBrick
     [RequireComponent(typeof(Rigidbody2D))]
     public class Ball : MonoBehaviour
     {
+        public uint damage { get; private set; } = 1;
+
         [SerializeField]
         private float _speedBase = 5;
         private float _speed;
         private float _speedCurrent;
-        private uint _damage = 1;
-
         private Transform _transform;
         private Rigidbody2D _rigidbody;
 
@@ -77,9 +77,14 @@ namespace WreckTheBrick
             OnDestroyed?.Invoke(this);
         }
 
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.layer == 0) Destroy(gameObject);
+        }
+
         public void AddDamage(uint amount)
         {
-            _damage += amount;
+            damage += amount;
             UpdateVisuals();
         }
 
