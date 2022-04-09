@@ -9,6 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c85d038fda8c5247875e850a232a975, type: 3}
-  m_Name: new PowerUp
+  m_Script: {fileID: 11500000, guid: aaa866ba76ea3d348ba22acddb4cdbda, type: 3}
+  m_Name: Damage Up
   m_EditorClassIdentifier: 
+  _sprite: {fileID: 0}
+  _effectStrength: 0
+  _duration: 0
