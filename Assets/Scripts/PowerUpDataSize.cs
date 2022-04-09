@@ -8,12 +8,15 @@ namespace WreckTheBrick
     [CreateAssetMenu(fileName = "new PowerUp size", menuName = "Scriptable/Power Up/Size")]
     public class PowerUpDataSize : PowerUpData
     {
+        [SerializeField]
+        protected float _duration = 0;
+
         public override void ApplyEffect(Player player)
         {
-            player.transform.localScale += Vector3.right * _effectStrength;
+            player.ChangeSize(_effectStrength);
             if (_duration > 0)
             {
-                player.DelayedCall(() => player.transform.localScale += Vector3.right * -_effectStrength, _duration);
+                player.DelayedCall(() => player.ChangeSize(-_effectStrength), _duration);
             }
         }
     }

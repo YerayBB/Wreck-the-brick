@@ -12,8 +12,6 @@ namespace WreckTheBrick
         protected Sprite _sprite;
         [SerializeField]
         protected float _effectStrength;
-        [SerializeField]
-        protected float _duration = 0;
 
         public abstract void ApplyEffect(Player player);
     }
