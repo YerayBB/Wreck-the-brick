@@ -5,19 +5,53 @@ using UtilsUnknown;
 
 namespace WreckTheBrick
 {
+    [RequireComponent(typeof(BoxCollider2D), typeof(Rigidbody2D), typeof(SpriteRenderer))]
     public class PowerUp : PoolableBehaviour
     {
+        [SerializeField]
+        private float _speed;
 
-        // Start is called before the first frame update
-        void Start()
+        private Transform _transform;
+        private SpriteRenderer _renderer;
+        private Rigidbody2D _rigidbody;
+
+        private System.Action<Player> _powerAction;
+
+        private void Awake()
         {
-
+            _transform = transform;
+            _renderer = GetComponent<SpriteRenderer>();
+            _rigidbody = GetComponent<Rigidbody2D>();
         }
 
-        // Update is called once per frame
-        void Update()
+        private void FixedUpdate()
         {
-
         }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (_init)
+            {
+                Player player;
+                if (collision.gameObject.TryGetComponent(out player))
+                {
+                    _powerAction?.Invoke(player);
+                }
+                Disable();
+            }
+        }
+
+        public void Initialize(Vector3 position,PowerUpData data)
+        {
+            _init = false;
+            _transform.position = position;
+            _renderer.sprite = data.sprite;
+            _powerAction = data.ApplyEffect;
+
+            gameObject.SetActive(true);
+            _rigidbody.velocity = Vector2.down * _speed;
+            _init = true;
+        }
+
     }
 }
