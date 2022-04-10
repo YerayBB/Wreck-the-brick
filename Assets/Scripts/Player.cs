@@ -120,7 +120,7 @@ namespace WreckTheBrick
 
         public void ChangeSize(float amount)
         {
-            float nextSize = Mathf.Clamp(_transform.localScale.x + amount, 1, 8);
+            float nextSize = Mathf.Clamp(_transform.localScale.x + amount, 1.5f, 8);
             RaycastHit2D ray = Physics2D.Raycast(_transform.position, Vector2.left, nextSize, LayerMask.NameToLayer("Obstacle"));
             if(ray)
             {
