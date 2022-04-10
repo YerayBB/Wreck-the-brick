@@ -20,6 +20,21 @@ namespace WreckTheBrick
         [SerializeField]
         private PowerUpData[] _powerUpRareTypes;
 
+        [SerializeField]
+        private GameObject _brickPrefab;
+        [SerializeField]
+        private BrickData[] _brickTypes;
+        [SerializeField]
+        private Bounds _levelBounds = new Bounds(new Vector3(0, 2, 0), new Vector3(23, 13, 0));
+
+        [SerializeField]
+        private int levelSizex;
+        [SerializeField]
+        private int levelSizey;
+
+        [SerializeField]
+        private Level[] _levels;
+
         private int _lives;
 
         private PoolMono<PowerUp> _powerUpPool;
@@ -42,7 +57,9 @@ namespace WreckTheBrick
         // Start is called before the first frame update
         void Start()
         {
-            SpawnPowerUp(Vector2.up * 3);
+            LevelBuilder level = new LevelBuilder(_levelBounds, _brickPrefab);
+            level.BuildLevel(new Level(6,15,_brickTypes.Length), _brickTypes);
+            level.OnLevelComplete += () => Debug.Log("Level Done");
         }
 
         // Update is called once per frame
@@ -94,6 +111,12 @@ namespace WreckTheBrick
         public void SpawnPowerUp(Vector3 pos)
         {
             _powerUpPool.GetItem().Initialize(pos, _powerUpTypes[0]);
+        }
+        //23 13 0 /// 0 2 0
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.DrawCube(_levelBounds.center, _levelBounds.size);
         }
     }
 }
