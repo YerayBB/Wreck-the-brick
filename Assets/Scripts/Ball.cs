@@ -11,9 +11,7 @@ namespace WreckTheBrick
         public uint damage { get; private set; } = 1;
 
         [SerializeField]
-        private float _speedBase = 5;
-        private float _speed;
-        private float _speedCurrent;
+        private float _speed = 5;
         private Transform _transform;
         private Rigidbody2D _rigidbody;
 
@@ -23,8 +21,6 @@ namespace WreckTheBrick
         {
             _transform = transform;
             _rigidbody = GetComponent<Rigidbody2D>();
-            _speed = _speedBase;
-            _speedCurrent = _speed;
         }
 
         // Start is called before the first frame update
@@ -35,12 +31,12 @@ namespace WreckTheBrick
 
         void Move()
         {
-            _rigidbody.velocity = (Vector2.one.normalized * _speedCurrent);
+            _rigidbody.velocity = (Vector2.one.normalized * _speed);
         }
 
         private void FixedUpdate()
         {
-            _rigidbody.velocity = _rigidbody.velocity.normalized * _speedCurrent;
+            _rigidbody.velocity = _rigidbody.velocity.normalized * _speed;
         }
         // Update is called once per frame
         void Update()
@@ -50,7 +46,7 @@ namespace WreckTheBrick
 
         public void SetDirection(Vector2 direction)
         {
-            _rigidbody.velocity = direction * _speedCurrent;
+            _rigidbody.velocity = direction * _speed;
         }
 
         public Vector2 GetDirection()
