@@ -26,11 +26,11 @@ namespace WreckTheBrick
         public void Initialize(Vector3 pos, Vector3 size, BrickData data)
         {
             _init = false;
-            _transform.position = pos;
-            _transform.localScale = size;
             _inmmune = data.inmune;
             _hp = data.maxHP;
             _renderer.sprite = data.sprite;
+            _transform.position = pos;
+            _transform.localScale = size;
             gameObject.SetActive(true);
             _init = true;
         }
