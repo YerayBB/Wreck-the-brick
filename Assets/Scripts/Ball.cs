@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace WreckTheBrick
 {
-    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
     public class Ball : MonoBehaviour
     {
         public uint damage { get; private set; } = 1;
@@ -14,19 +14,30 @@ namespace WreckTheBrick
         private float _speed = 5;
         private Transform _transform;
         private Rigidbody2D _rigidbody;
+        private SpriteRenderer _renderer;
 
-        public event Action<Ball> OnDestroyed;
+        [SerializeField]
+        private Sprite _baseSprite;
+        [SerializeField]
+        private Sprite _upgradedSprite;
+        [SerializeField]
+        private Gradient _color;
+        [SerializeField]
+        private int _maxDammage = 6;
+
+        public event Action<Ball> OnKilled;
 
         private void Awake()
         {
             _transform = transform;
             _rigidbody = GetComponent<Rigidbody2D>();
+            _renderer = GetComponent<SpriteRenderer>();
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            //Invoke("Move", 2f);
+            UpdateVisuals();
         }
 
         void Move()
@@ -68,25 +79,30 @@ namespace WreckTheBrick
             SetDirection(direction);
         }
 
-        private void OnDestroy()
+        public void Kill()
         {
-            OnDestroyed?.Invoke(this);
+            OnKilled?.Invoke(this);
+            Destroy(gameObject);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.gameObject.layer == 0) Destroy(gameObject);
+            if (collision.gameObject.layer == 0) Kill();
+            if (_rigidbody.velocity.normalized.x == 1) _rigidbody.velocity += Vector2.up;
         }
 
         public void AddDamage(uint amount)
         {
             damage += amount;
+            Mathf.Clamp(damage, 1, _maxDammage);
             UpdateVisuals();
         }
 
         private void UpdateVisuals()
         {
-            Debug.Log("Not Implemented UpdateVisuals");
+            float ratio = (float)damage / (float)_maxDammage;
+            _renderer.sprite = ratio >= 0.5 ? _upgradedSprite : _baseSprite;
+            _renderer.color = _color.Evaluate(ratio);
         }
     }
 }

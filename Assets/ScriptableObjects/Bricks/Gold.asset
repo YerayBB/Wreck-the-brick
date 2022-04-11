@@ -10,5 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: def078fcab0e99143a5aee117db10d09, type: 3}
-  m_Name: new Brick
+  m_Name: Gold
   m_EditorClassIdentifier: 
+  _sprite: {fileID: 7720078550713291429, guid: 413986c4a668c374d8de72a47621b531, type: 3}
+  _maxHP: 5
+  _dropRate: 0

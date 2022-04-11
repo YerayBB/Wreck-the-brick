@@ -100,7 +100,7 @@ namespace WreckTheBrick
                 else
                 {
                     AttachBall(ball);
-                    _releaseBallTimer = this.DelayedCall(ReleaseBall, _stickiness * 5);
+                    _releaseBallTimer = this.DelayedCall(ReleaseBall, _stickiness * 0.5f);
                 }
             }
         }

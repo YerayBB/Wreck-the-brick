@@ -13,6 +13,8 @@ namespace WreckTheBrick
 
         private bool _inmmune = false;
         private int _hp = 0;
+        private int _maxHp = 0;
+        private int _dropRate = 0;
 
         public System.Action<int> OnHpLost;
 
@@ -27,7 +29,9 @@ namespace WreckTheBrick
         {
             _init = false;
             _inmmune = data.inmune;
-            _hp = data.maxHP;
+            _maxHp = data.maxHP;
+            _hp = _maxHp;
+            _dropRate = data.dropRate;
             _renderer.sprite = data.sprite;
             _transform.position = pos;
             _transform.localScale = size;
@@ -47,7 +51,11 @@ namespace WreckTheBrick
                         int amount = Mathf.Min((int) ball.damage, _hp);
                         _hp -= amount;
                         OnHpLost?.Invoke(amount);
-                        if (_hp <= 0) Disable();
+                        if (_hp <= 0)
+                        {
+                            if (Random.Range(0, 100) <= _dropRate) GameManager.Instance.SpawnPowerUp(_transform.position);
+                            Disable();
+                        }
                     }
                 }
             }
