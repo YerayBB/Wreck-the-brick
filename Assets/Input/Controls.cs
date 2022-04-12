@@ -92,6 +92,124 @@ namespace WreckTheBrick
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""MenuClear"",
+            ""id"": ""58ad20b7-70db-49e5-9bb4-14f5300c9354"",
+            ""actions"": [
+                {
+                    ""name"": ""Start"",
+                    ""type"": ""Button"",
+                    ""id"": ""b3919713-cf6e-4196-9d39-7438177b4fde"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Exit"",
+                    ""type"": ""Button"",
+                    ""id"": ""19caf436-d84b-47a7-8243-964289175138"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""5b5edc59-2f5a-4079-9f48-7fe02e6029f9"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Start"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d29fa984-d8d3-45a7-a2a5-a6becacc0b47"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Exit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""de76b2d7-a929-4373-93d9-4d3addb2cdd2"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Exit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""MenuGameOver"",
+            ""id"": ""a1deb455-0246-4bda-aa61-98202def39af"",
+            ""actions"": [
+                {
+                    ""name"": ""Retry"",
+                    ""type"": ""Button"",
+                    ""id"": ""48c329ec-902e-4aa1-84d0-f55886b6d9d8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Exit"",
+                    ""type"": ""Button"",
+                    ""id"": ""572ed534-20d2-4bda-8284-9cb95134afa6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""867f9a89-d5c3-4118-b0a4-461062f04dd7"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Retry"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""64f23490-1c1f-43d0-adde-76d55d02ad3b"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Exit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""05bd345c-6513-420c-a3d6-0e6a03c295f4"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Exit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -101,6 +219,14 @@ namespace WreckTheBrick
             m_Player_Left = m_Player.FindAction("Left", throwIfNotFound: true);
             m_Player_Right = m_Player.FindAction("Right", throwIfNotFound: true);
             m_Player_Shot = m_Player.FindAction("Shot", throwIfNotFound: true);
+            // MenuClear
+            m_MenuClear = asset.FindActionMap("MenuClear", throwIfNotFound: true);
+            m_MenuClear_Start = m_MenuClear.FindAction("Start", throwIfNotFound: true);
+            m_MenuClear_Exit = m_MenuClear.FindAction("Exit", throwIfNotFound: true);
+            // MenuGameOver
+            m_MenuGameOver = asset.FindActionMap("MenuGameOver", throwIfNotFound: true);
+            m_MenuGameOver_Retry = m_MenuGameOver.FindAction("Retry", throwIfNotFound: true);
+            m_MenuGameOver_Exit = m_MenuGameOver.FindAction("Exit", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -205,11 +331,103 @@ namespace WreckTheBrick
             }
         }
         public PlayerActions @Player => new PlayerActions(this);
+
+        // MenuClear
+        private readonly InputActionMap m_MenuClear;
+        private IMenuClearActions m_MenuClearActionsCallbackInterface;
+        private readonly InputAction m_MenuClear_Start;
+        private readonly InputAction m_MenuClear_Exit;
+        public struct MenuClearActions
+        {
+            private @Controls m_Wrapper;
+            public MenuClearActions(@Controls wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Start => m_Wrapper.m_MenuClear_Start;
+            public InputAction @Exit => m_Wrapper.m_MenuClear_Exit;
+            public InputActionMap Get() { return m_Wrapper.m_MenuClear; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(MenuClearActions set) { return set.Get(); }
+            public void SetCallbacks(IMenuClearActions instance)
+            {
+                if (m_Wrapper.m_MenuClearActionsCallbackInterface != null)
+                {
+                    @Start.started -= m_Wrapper.m_MenuClearActionsCallbackInterface.OnStart;
+                    @Start.performed -= m_Wrapper.m_MenuClearActionsCallbackInterface.OnStart;
+                    @Start.canceled -= m_Wrapper.m_MenuClearActionsCallbackInterface.OnStart;
+                    @Exit.started -= m_Wrapper.m_MenuClearActionsCallbackInterface.OnExit;
+                    @Exit.performed -= m_Wrapper.m_MenuClearActionsCallbackInterface.OnExit;
+                    @Exit.canceled -= m_Wrapper.m_MenuClearActionsCallbackInterface.OnExit;
+                }
+                m_Wrapper.m_MenuClearActionsCallbackInterface = instance;
+                if (instance != null)
+                {
+                    @Start.started += instance.OnStart;
+                    @Start.performed += instance.OnStart;
+                    @Start.canceled += instance.OnStart;
+                    @Exit.started += instance.OnExit;
+                    @Exit.performed += instance.OnExit;
+                    @Exit.canceled += instance.OnExit;
+                }
+            }
+        }
+        public MenuClearActions @MenuClear => new MenuClearActions(this);
+
+        // MenuGameOver
+        private readonly InputActionMap m_MenuGameOver;
+        private IMenuGameOverActions m_MenuGameOverActionsCallbackInterface;
+        private readonly InputAction m_MenuGameOver_Retry;
+        private readonly InputAction m_MenuGameOver_Exit;
+        public struct MenuGameOverActions
+        {
+            private @Controls m_Wrapper;
+            public MenuGameOverActions(@Controls wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Retry => m_Wrapper.m_MenuGameOver_Retry;
+            public InputAction @Exit => m_Wrapper.m_MenuGameOver_Exit;
+            public InputActionMap Get() { return m_Wrapper.m_MenuGameOver; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(MenuGameOverActions set) { return set.Get(); }
+            public void SetCallbacks(IMenuGameOverActions instance)
+            {
+                if (m_Wrapper.m_MenuGameOverActionsCallbackInterface != null)
+                {
+                    @Retry.started -= m_Wrapper.m_MenuGameOverActionsCallbackInterface.OnRetry;
+                    @Retry.performed -= m_Wrapper.m_MenuGameOverActionsCallbackInterface.OnRetry;
+                    @Retry.canceled -= m_Wrapper.m_MenuGameOverActionsCallbackInterface.OnRetry;
+                    @Exit.started -= m_Wrapper.m_MenuGameOverActionsCallbackInterface.OnExit;
+                    @Exit.performed -= m_Wrapper.m_MenuGameOverActionsCallbackInterface.OnExit;
+                    @Exit.canceled -= m_Wrapper.m_MenuGameOverActionsCallbackInterface.OnExit;
+                }
+                m_Wrapper.m_MenuGameOverActionsCallbackInterface = instance;
+                if (instance != null)
+                {
+                    @Retry.started += instance.OnRetry;
+                    @Retry.performed += instance.OnRetry;
+                    @Retry.canceled += instance.OnRetry;
+                    @Exit.started += instance.OnExit;
+                    @Exit.performed += instance.OnExit;
+                    @Exit.canceled += instance.OnExit;
+                }
+            }
+        }
+        public MenuGameOverActions @MenuGameOver => new MenuGameOverActions(this);
         public interface IPlayerActions
         {
             void OnLeft(InputAction.CallbackContext context);
             void OnRight(InputAction.CallbackContext context);
             void OnShot(InputAction.CallbackContext context);
+        }
+        public interface IMenuClearActions
+        {
+            void OnStart(InputAction.CallbackContext context);
+            void OnExit(InputAction.CallbackContext context);
+        }
+        public interface IMenuGameOverActions
+        {
+            void OnRetry(InputAction.CallbackContext context);
+            void OnExit(InputAction.CallbackContext context);
         }
     }
 }
