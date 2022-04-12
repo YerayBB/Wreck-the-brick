@@ -176,7 +176,7 @@ namespace WreckTheBrick
 
         public void SpawnPowerUp(Vector3 pos)
         {
-            if(Random.Range(0,10) > 7) _powerUpPool.GetItem().Initialize(pos, _powerUpRareTypes[Random.Range(0,_powerUpRareTypes.Length)]);
+            if(Random.Range(0,10) > 8) _powerUpPool.GetItem().Initialize(pos, _powerUpRareTypes[Random.Range(0,_powerUpRareTypes.Length)]);
             else _powerUpPool.GetItem().Initialize(pos, _powerUpTypes[Random.Range(0, _powerUpTypes.Length)]);
 
         }
