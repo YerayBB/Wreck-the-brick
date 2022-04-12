@@ -36,10 +36,13 @@ namespace WreckTheBrick
         private Level[] _levels;
         private LevelBuilder _levelBuilder;
 
-        private int _lives;
+        private int _lives = 3;
+        private Player _player;
 
         private PoolMono<PowerUp> _powerUpPool;
         private List<Ball> _balls;
+
+        private Controls _inputs;
 
         private void Awake()
         {
@@ -53,30 +56,68 @@ namespace WreckTheBrick
                 _balls = new List<Ball>();
                 _powerUpPool = new PoolMono<PowerUp>(_powerUpPrefab);
                 _levelBuilder = new LevelBuilder(_levelBounds, _brickPrefab);
-                _levelBuilder.OnLevelComplete += () => Debug.Log("Level Done");
+                _levelBuilder.OnLevelComplete += () =>
+                {
+                    UIManager.Instance.ClearLevelUI();
+                    foreach(Ball ball in _balls)
+                    {
+                        ball.enabled = false;
+                        Destroy(ball.gameObject);
+                    }
+                    _balls.Clear();
+                    _inputs.MenuClear.Enable();
+                };
+
+                _inputs = new Controls();
+                _inputs.MenuGameOver.Disable();
+                _inputs.MenuGameOver.Retry.performed += (context) =>
+                {
+                    Debug.Log("Called Retry");
+                    UnityEngine.SceneManagement.SceneManager.LoadScene(1);
+                };
+                _inputs.MenuClear.Start.performed += (context) =>
+                {
+                    _inputs.MenuClear.Disable();
+                    UIManager.Instance.ContinueUI();
+                    CreateLevel();
+                    StartGame();
+                };
+                _inputs.MenuClear.Exit.performed += (context) => UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+                _inputs.MenuGameOver.Exit.performed += (context) => UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+
             }
         }
 
         // Start is called before the first frame update
         void Start()
-        { 
-            StartLevel();
+        {
+            UIManager.Instance.ShowLives(_lives);
+            CreateLevel();
+            StartGame();
         }
 
-        private void StartLevel()
+        private void CreateLevel()
         {
             _levelBuilder.BuildLevel(new Level(6, 15, _brickTypes.Length), _brickTypes);
+            
         }
 
-        // Update is called once per frame
-        void Update()
+        private void StartGame()
         {
+            _player.AttachBall(SpawnBall(_player.transform.position + Vector3.up));
+            _player.EnableInputs();
+        }
 
+        public void SetPlayer(Player p)
+        {
+            _player = p;
         }
 
         private void GameOver()
         {
-            Debug.Log("GAMEOVER");
+            _player.DisableInputs();
+            _inputs.MenuGameOver.Enable();
+            UIManager.Instance.GameOverUI();
         }
 
         public Ball SpawnBall(Vector2 position)
@@ -88,7 +129,7 @@ namespace WreckTheBrick
                     _balls.Remove(ball);
                     if(_balls.Count == 0)
                     {
-                        AddLives(-1);
+                        LoseLives(1);
                     }
                 };
             _balls.Add(aux);
@@ -106,7 +147,19 @@ namespace WreckTheBrick
         public void AddLives(int amount)
         {
             _lives += amount;
+            UIManager.Instance.ShowLives(_lives);
             if (_lives <= 0) GameOver();
+        }
+
+        private void LoseLives(int amount)
+        {
+            _lives -= amount;
+            UIManager.Instance.ShowLives(_lives);
+            if (_lives <= 0) GameOver();
+            else
+            {
+                StartGame();
+            }
         }
 
         public void AddPowerToBalls(int amount)
@@ -123,7 +176,6 @@ namespace WreckTheBrick
             else _powerUpPool.GetItem().Initialize(pos, _powerUpTypes[Random.Range(0, _powerUpTypes.Length)]);
 
         }
-        //23 13 0 /// 0 2 0
 
         private void OnDrawGizmos()
         {
