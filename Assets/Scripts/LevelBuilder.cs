@@ -51,6 +51,7 @@ namespace WreckTheBrick
 
         public void BuildLevel(Level level, BrickData[] bricks)
         {
+            _inmmuneBricks = 0;
             int levelsizex = level.sizeX;
             int levelsizey = level.sizeY;
             Vector3 brickSize = new Vector3(_area.size.x / levelsizex, _area.size.y / levelsizey, 1);
