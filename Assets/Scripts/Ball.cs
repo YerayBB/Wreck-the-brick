@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace WreckTheBrick
@@ -10,22 +7,27 @@ namespace WreckTheBrick
     {
         public uint damage { get; private set; } = 1;
 
+        [Header("Stats")]
         [SerializeField]
         private float _speed = 5;
-        private Transform _transform;
-        private Rigidbody2D _rigidbody;
-        private SpriteRenderer _renderer;
-
+        [SerializeField]
+        private int _maxDammage = 6;
+        
+        [Header("Visuals")]
         [SerializeField]
         private Sprite _baseSprite;
         [SerializeField]
         private Sprite _upgradedSprite;
         [SerializeField]
         private Gradient _color;
-        [SerializeField]
-        private int _maxDammage = 6;
 
-        public event Action<Ball> OnKilled;
+        private Transform _transform;
+        private Rigidbody2D _rigidbody;
+        private SpriteRenderer _renderer;
+
+        public event System.Action<Ball> OnKilled;
+
+        #region MonoBehaviourCalls
 
         private void Awake()
         {
@@ -34,35 +36,33 @@ namespace WreckTheBrick
             _renderer = GetComponent<SpriteRenderer>();
         }
 
-        // Start is called before the first frame update
         void Start()
         {
             UpdateVisuals();
-        }
-
-        void Move()
-        {
-            _rigidbody.velocity = (Vector2.one.normalized * _speed);
         }
 
         private void FixedUpdate()
         {
             _rigidbody.velocity = _rigidbody.velocity.normalized * _speed;
         }
-        // Update is called once per frame
-        void Update()
-        {
 
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.layer == 0) Kill();
+            if (_rigidbody.velocity.normalized.x == 1) _rigidbody.velocity += Vector2.up * _speed / 2;
+        }
+
+        #endregion
+
+
+        public Vector2 GetDirection()
+        {
+            return _rigidbody.velocity.normalized;
         }
 
         public void SetDirection(Vector2 direction)
         {
             _rigidbody.velocity = direction * _speed;
-        }
-
-        public Vector2 GetDirection()
-        {
-            return _rigidbody.velocity.normalized;
         }
 
         public void Stick(Transform parent)
@@ -79,23 +79,17 @@ namespace WreckTheBrick
             SetDirection(direction);
         }
 
-        public void Kill()
-        {
-            OnKilled?.Invoke(this);
-            Destroy(gameObject);
-        }
-
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            if (collision.gameObject.layer == 0) Kill();
-            if (_rigidbody.velocity.normalized.x == 1) _rigidbody.velocity += Vector2.up*_speed/2;
-        }
-
         public void AddDamage(uint amount)
         {
             damage += amount;
             Mathf.Clamp(damage, 1, _maxDammage);
             UpdateVisuals();
+        }
+
+        public void Kill()
+        {
+            OnKilled?.Invoke(this);
+            Destroy(gameObject);
         }
 
         private void UpdateVisuals()

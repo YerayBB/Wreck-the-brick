@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UtilsUnknown.Extensions;
-using UnityEngine.InputSystem;
 
 namespace WreckTheBrick
 {
@@ -26,56 +22,22 @@ namespace WreckTheBrick
         private Ball _attachedBall = null;
         private Coroutine _releaseBallTimer;
 
-
-
-
+        #region MonoBehaviourCalls
 
         private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
             _transform = transform;
 
+            //Input Config
             _inputs = new Controls();
             _inputs.Player.Left.performed += (context) => _leftMove = true;
             _inputs.Player.Left.canceled += (context) => _leftMove = false;
             _inputs.Player.Right.performed += (context) => _rightMove = true;
             _inputs.Player.Right.canceled += (context) => _rightMove = false;
             _inputs.Player.Shot.performed += (context) => ReleaseBall();
-            //_inputs.Player.Enable();
 
             GameManager.Instance.SetPlayer(this);
-        }
-
-        private void ReleaseBall()
-        {
-            if(_attachedBall != null)
-            {
-                if (_releaseBallTimer != null) StopCoroutine(_releaseBallTimer);
-                _attachedBall.Release(_transform.up);
-                _attachedBall = null;
-            }
-        }
-
-        // Start is called before the first frame update
-        void Start()
-        {
-            
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
-        public void EnableInputs()
-        {
-            _inputs.Player.Enable();
-        }
-
-        public void DisableInputs()
-        {
-            _inputs.Player.Disable();
         }
 
         private void FixedUpdate()
@@ -93,7 +55,7 @@ namespace WreckTheBrick
         private void OnCollisionEnter2D(Collision2D collision)
         {
             Ball ball;
-            if(collision.gameObject.TryGetComponent<Ball>(out ball))
+            if (collision.gameObject.TryGetComponent<Ball>(out ball))
             {
                 if (_stickiness == 0)
                 {
@@ -114,6 +76,18 @@ namespace WreckTheBrick
                     _releaseBallTimer = this.DelayedCall(ReleaseBall, _stickiness * 0.5f);
                 }
             }
+        }
+
+        #endregion
+
+        public void EnableInputs()
+        {
+            _inputs.Player.Enable();
+        }
+
+        public void DisableInputs()
+        {
+            _inputs.Player.Disable();
         }
 
         public void AttachBall(Ball ball)
@@ -153,6 +127,16 @@ namespace WreckTheBrick
             {
                 _attachedBall.transform.position += Vector3.right * nextSize * offset;
                 _attachedBall.transform.parent = _transform;
+            }
+        }
+
+        private void ReleaseBall()
+        {
+            if (_attachedBall != null)
+            {
+                if (_releaseBallTimer != null) StopCoroutine(_releaseBallTimer);
+                _attachedBall.Release(_transform.up);
+                _attachedBall = null;
             }
         }
     }

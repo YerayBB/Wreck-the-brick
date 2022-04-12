@@ -1,21 +1,21 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UtilsUnknown;
 
 namespace WreckTheBrick
 {
+    //UNFINISHED CLASS
     [System.Serializable]
     public class LevelBuilder
     {
+        public event System.Action OnLevelComplete;
+
         [SerializeField]
         private Bounds _area;
 
         private PoolMono<Brick> _brickPool;
 
         private int _inmmuneBricks = 0;
-
-        public event System.Action OnLevelComplete;
        
         public LevelBuilder(Bounds area, GameObject brickPrefab)
         {
@@ -24,8 +24,8 @@ namespace WreckTheBrick
             _area = area;
         }
 
-        //size is rows,colums ///TODO
-        public void BuildLevel(Vector2Int levelSize, BrickData[] bricks, int brickAmount)
+        ///TODO
+        /*public void BuildLevel(Vector2Int levelSize, BrickData[] bricks, int brickAmount)
         {
             Vector3 brickSize = new Vector3(_area.size.x / levelSize.x, _area.size.y / levelSize.y, 1);
             Vector3 brickCenter = brickSize / 2;
@@ -46,7 +46,7 @@ namespace WreckTheBrick
 
 
 
-        }
+        }*/
 
 
         public void BuildLevel(Level level, BrickData[] bricks)
@@ -94,49 +94,12 @@ namespace WreckTheBrick
                     }
                 }
             }
-
         }
 
-
-        public void CheckLevelComplete()
+        private void CheckLevelComplete()
         {
             if (_brickPool.GetActivesAmount() == _inmmuneBricks) OnLevelComplete?.Invoke();
         }
 
     }
-
-
-    [System.Serializable]
-    public class Level
-    {
-        public int[] bricks;
-        public int sizeX ;
-        public int sizeY ;
-
-        public int this[int x,int y] { get { return bricks[y * sizeX + x]; } set { bricks[y * sizeX + x] = value; } }
-
-        private Level() { }
-
-        /// <summary>
-        /// Creates a random level with the given size and within the given range
-        /// </summary>
-        /// <param name="x">rows</param>
-        /// <param name="y">columns</param>
-        /// <param name="range"></param>
-        public Level(int x, int y, int range)
-        {
-            bricks = new int[x * y];
-            sizeX = x;
-            sizeY = y;
-            for(int i = 0; i<x; ++i)
-            {
-                for(int j = 0; j<y; ++j)
-                {
-                    bricks[j*x+i] = Random.Range(-1, range);
-                }
-            }
-        }
-    }
-
-
 }

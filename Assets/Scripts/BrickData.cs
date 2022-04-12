@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace WreckTheBrick
@@ -9,7 +7,7 @@ namespace WreckTheBrick
     {
         public Sprite sprite => _sprite;
         public int maxHP => _maxHP;
-        public bool inmune => _maxHP < 0;
+        public bool inmune => _maxHP <= 0;
         public int dropRate => _dropRate;
 
         [SerializeField]
@@ -19,6 +17,5 @@ namespace WreckTheBrick
         [SerializeField]
         [Tooltip("From 0 to 100")]
         private int _dropRate;
-
     }
 }

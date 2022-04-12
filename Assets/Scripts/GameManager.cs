@@ -1,5 +1,3 @@
-//using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UtilsUnknown;
@@ -12,37 +10,46 @@ namespace WreckTheBrick
 
         [SerializeField]
         private Ball _ballPrefab;
+
+        [Header("PowerUp Fields")]
         [SerializeField]
         private GameObject _powerUpPrefab;
-
         [SerializeField]
         private PowerUpData[] _powerUpTypes;
         [SerializeField]
         private PowerUpData[] _powerUpRareTypes;
+        [SerializeField]
+        [Tooltip("from 0 to 100")]
+        private int _powerUpRareChance = 15;
 
+        [Header("Level Config")]
+        [SerializeField]
+        private Bounds _levelBounds = new Bounds(new Vector3(0, 2, 0), new Vector3(23, 13, 0));
+        [SerializeField]
+        [Tooltip("Columns")]
+        private int levelSizex;
+        [SerializeField]
+        [Tooltip("Rows")]
+        private int levelSizey;
         [SerializeField]
         private GameObject _brickPrefab;
         [SerializeField]
         private BrickData[] _brickTypes;
-        [SerializeField]
-        private Bounds _levelBounds = new Bounds(new Vector3(0, 2, 0), new Vector3(23, 13, 0));
 
         [SerializeField]
-        private int levelSizex;
-        [SerializeField]
-        private int levelSizey;
-
-        [SerializeField]
+        [Tooltip("Predefined Levels")]
         private Level[] _levels;
+
         private LevelBuilder _levelBuilder;
-
-        private int _lives = 3;
-        private Player _player;
-
         private PoolMono<PowerUp> _powerUpPool;
         private List<Ball> _balls;
-
         private Controls _inputs;
+
+        private Player _player;
+        private int _lives = 3;
+
+
+        #region MonoBehaviourCalls
 
         private void Awake()
         {
@@ -53,8 +60,11 @@ namespace WreckTheBrick
             else
             {
                 Instance = this;
+
                 _balls = new List<Ball>();
                 _powerUpPool = new PoolMono<PowerUp>(_powerUpPrefab);
+
+                //LevelBuilder Config
                 _levelBuilder = new LevelBuilder(_levelBounds, _brickPrefab);
                 _levelBuilder.OnLevelComplete += () =>
                 {
@@ -69,15 +79,17 @@ namespace WreckTheBrick
                     _inputs.MenuClear.Enable();
                 };
 
+                //Input Config
                 _inputs = new Controls();
                 _inputs.MenuGameOver.Disable();
                 _inputs.MenuGameOver.Retry.performed += (context) =>
                 {
-                    Debug.Log("Called Retry");
+                    //Reload scene
                     UnityEngine.SceneManagement.SceneManager.LoadScene(1);
                 };
                 _inputs.MenuClear.Start.performed += (context) =>
                 {
+                    //Generate next level and start it
                     _inputs.MenuClear.Disable();
                     UIManager.Instance.ContinueUI();
                     CreateLevel();
@@ -85,11 +97,9 @@ namespace WreckTheBrick
                 };
                 _inputs.MenuClear.Exit.performed += (context) => UnityEngine.SceneManagement.SceneManager.LoadScene(0);
                 _inputs.MenuGameOver.Exit.performed += (context) => UnityEngine.SceneManagement.SceneManager.LoadScene(0);
-
             }
         }
 
-        // Start is called before the first frame update
         void Start()
         {
             UIManager.Instance.ShowLives(_lives);
@@ -97,44 +107,17 @@ namespace WreckTheBrick
             StartGame();
         }
 
-        private void CreateLevel()
+        private void OnDrawGizmos()
         {
-            _levelBuilder.BuildLevel(new Level(6, 15, _brickTypes.Length), _brickTypes);
-            
+            Gizmos.DrawWireCube(_levelBounds.center, _levelBounds.size);
         }
 
-        private void StartGame()
-        {
-            _player.AttachBall(SpawnBall(_player.transform.position + Vector3.up));
-            _player.EnableInputs();
-        }
+        #endregion
+
 
         public void SetPlayer(Player p)
         {
             _player = p;
-        }
-
-        private void GameOver()
-        {
-            _player.DisableInputs();
-            _inputs.MenuGameOver.Enable();
-            UIManager.Instance.GameOverUI();
-        }
-
-        public Ball SpawnBall(Vector2 position)
-        {
-            Ball aux = Instantiate<Ball>(_ballPrefab, position, Quaternion.identity);
-            aux.OnKilled +=
-                (ball) =>
-                {
-                    _balls.Remove(ball);
-                    if(_balls.Count == 0)
-                    {
-                        LoseLives(1);
-                    }
-                };
-            _balls.Add(aux);
-            return aux;
         }
 
         public void AddBall(int amount)
@@ -148,11 +131,44 @@ namespace WreckTheBrick
             }
         }
 
+        public void SpawnPowerUp(Vector3 pos)
+        {
+            if (Random.Range(0, 100) < _powerUpRareChance) _powerUpPool.GetItem().Initialize(pos, _powerUpRareTypes[Random.Range(0, _powerUpRareTypes.Length)]);
+            else _powerUpPool.GetItem().Initialize(pos, _powerUpTypes[Random.Range(0, _powerUpTypes.Length)]);
+        }
+
+        public void AddPowerToBalls(int amount)
+        {
+            foreach (Ball ball in _balls)
+            {
+                ball.AddDamage((uint)amount);
+            }
+        }
+
         public void AddLives(int amount)
         {
             _lives += amount;
             UIManager.Instance.ShowLives(_lives);
             if (_lives <= 0) GameOver();
+        }
+
+
+        private void CreateLevel()
+        {
+            _levelBuilder.BuildLevel(new Level(6, 15, _brickTypes.Length), _brickTypes);
+        }
+
+        private void StartGame()
+        {
+            _player.AttachBall(SpawnBall(_player.transform.position + Vector3.up));
+            _player.EnableInputs();
+        }
+
+        private void GameOver()
+        {
+            _player.DisableInputs();
+            _inputs.MenuGameOver.Enable();
+            UIManager.Instance.GameOverUI();
         }
 
         private void LoseLives(int amount)
@@ -166,24 +182,21 @@ namespace WreckTheBrick
             }
         }
 
-        public void AddPowerToBalls(int amount)
+        private Ball SpawnBall(Vector2 position)
         {
-            foreach(Ball ball in _balls)
-            {
-                ball.AddDamage((uint)amount);
-            }
+            Ball aux = Instantiate<Ball>(_ballPrefab, position, Quaternion.identity);
+            aux.OnKilled +=
+                (ball) =>
+                {
+                    _balls.Remove(ball);
+                    if (_balls.Count == 0)
+                    {
+                        LoseLives(1);
+                    }
+                };
+            _balls.Add(aux);
+            return aux;
         }
 
-        public void SpawnPowerUp(Vector3 pos)
-        {
-            if(Random.Range(0,10) > 8) _powerUpPool.GetItem().Initialize(pos, _powerUpRareTypes[Random.Range(0,_powerUpRareTypes.Length)]);
-            else _powerUpPool.GetItem().Initialize(pos, _powerUpTypes[Random.Range(0, _powerUpTypes.Length)]);
-
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.DrawWireCube(_levelBounds.center, _levelBounds.size);
-        }
     }
 }
