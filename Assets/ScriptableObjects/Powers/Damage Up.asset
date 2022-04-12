@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa866ba76ea3d348ba22acddb4cdbda, type: 3}
   m_Name: Damage Up
   m_EditorClassIdentifier: 
-  _sprite: {fileID: -7347827468922994342, guid: 3d6be91968cb95546ac95aeff5e52f84, type: 3}
+  _sprite: {fileID: 837517196756356485, guid: 131e485692e27e84c86170dad18cda85, type: 3}
   _effectStrength: 1
+  _color: {r: 1, g: 1, b: 1, a: 1}

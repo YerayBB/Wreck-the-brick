@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a75491b9297a1a42b4a8297a367cb60, type: 3}
   m_Name: Extra Ball
   m_EditorClassIdentifier: 
-  _sprite: {fileID: 1419576285154770477, guid: 1ddc9afd21fec77489b1248d18f31b68, type: 3}
+  _sprite: {fileID: -4570538037665054336, guid: 3d6be91968cb95546ac95aeff5e52f84, type: 3}
   _effectStrength: 1
+  _color: {r: 1, g: 1, b: 1, a: 1}

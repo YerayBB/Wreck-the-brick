@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b131d7e3457ddfb449c4f26307710b17, type: 3}
   m_Name: Glue
   m_EditorClassIdentifier: 
-  _sprite: {fileID: 0}
+  _sprite: {fileID: 7293598183456022363, guid: 1ddc9afd21fec77489b1248d18f31b68, type: 3}
   _effectStrength: 20
-  _color: {r: 1, g: 1, b: 1, a: 1}
+  _color: {r: 0.9780209, g: 1, b: 0, a: 1}
   _duration: 10
