@@ -125,13 +125,19 @@ namespace WreckTheBrick
 
         public void AddStickiness(int value)
         {
-            Debug.Log($"Added stickiness {value}");
             _stickiness = (uint) Mathf.Max(_stickiness + value, 0);
         }
 
         public void ChangeSize(float amount)
         {
             float nextSize = Mathf.Clamp(_transform.localScale.x + amount, 1.5f, 8);
+            bool hasBall = _attachedBall != null;
+            float offset = 0;
+            if (hasBall)
+            {
+                _attachedBall.transform.parent = null;
+                offset = (_transform.position.x - _attachedBall.transform.position.x)/_transform.localScale.x;
+            }
             RaycastHit2D ray = Physics2D.Raycast(_transform.position, Vector2.left, nextSize, LayerMask.NameToLayer("Obstacle"));
             if(ray)
             {
@@ -142,10 +148,12 @@ namespace WreckTheBrick
             {
                 _transform.position += Vector3.left * ray.distance;
             }
-            bool hasBall = _attachedBall != null;
-            if(hasBall) _attachedBall.transform.parent = null;
             _transform.localScale = new Vector3(nextSize, _transform.localScale.y, _transform.localScale.z);
-            if(hasBall)_attachedBall.transform.parent = _transform;
+            if (hasBall)
+            {
+                _attachedBall.transform.position += Vector3.right * nextSize * offset;
+                _attachedBall.transform.parent = _transform;
+            }
         }
     }
 }
