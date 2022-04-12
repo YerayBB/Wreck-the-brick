@@ -88,7 +88,7 @@ namespace WreckTheBrick
         private void OnCollisionEnter2D(Collision2D collision)
         {
             if (collision.gameObject.layer == 0) Kill();
-            if (_rigidbody.velocity.normalized.x == 1) _rigidbody.velocity += Vector2.up;
+            if (_rigidbody.velocity.normalized.x == 1) _rigidbody.velocity += Vector2.up*_speed/2;
         }
 
         public void AddDamage(uint amount)
