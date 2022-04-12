@@ -17,6 +17,7 @@ namespace WreckTheBrick
         [SerializeField]
         private int _maxHP;
         [SerializeField]
+        [Tooltip("From 0 to 100")]
         private int _dropRate;
 
     }
