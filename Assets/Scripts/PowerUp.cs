@@ -10,6 +10,7 @@ namespace WreckTheBrick
     {
         [SerializeField]
         private float _speed;
+        private string _name;
 
         private Transform _transform;
         private SpriteRenderer _renderer;
@@ -36,6 +37,7 @@ namespace WreckTheBrick
                 if (collision.gameObject.TryGetComponent(out player))
                 {
                     _powerAction?.Invoke(player);
+                    UIManager.Instance.Notification(_name);
                 }
                 Disable();
             }
@@ -46,7 +48,9 @@ namespace WreckTheBrick
             _init = false;
             _transform.position = position;
             _renderer.sprite = data.sprite;
+            _renderer.color = data.color;
             _powerAction = data.ApplyEffect;
+            _name = data.name;
 
             gameObject.SetActive(true);
             _rigidbody.velocity = Vector2.down * _speed;
