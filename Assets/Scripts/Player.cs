@@ -41,8 +41,9 @@ namespace WreckTheBrick
             _inputs.Player.Right.performed += (context) => _rightMove = true;
             _inputs.Player.Right.canceled += (context) => _rightMove = false;
             _inputs.Player.Shot.performed += (context) => ReleaseBall();
-            _inputs.Player.Enable();
+            //_inputs.Player.Enable();
 
+            GameManager.Instance.SetPlayer(this);
         }
 
         private void ReleaseBall()
@@ -58,13 +59,23 @@ namespace WreckTheBrick
         // Start is called before the first frame update
         void Start()
         {
-            AttachBall(GameManager.Instance.SpawnBall(_transform.position + Vector3.up));
+            
         }
 
         // Update is called once per frame
         void Update()
         {
 
+        }
+
+        public void EnableInputs()
+        {
+            _inputs.Player.Enable();
+        }
+
+        public void DisableInputs()
+        {
+            _inputs.Player.Disable();
         }
 
         private void FixedUpdate()
